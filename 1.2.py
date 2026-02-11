@@ -4,13 +4,12 @@ from scipy.optimize import linprog
 
 def solve_task_2():
     N = 11
-    num_vars = 10 * N  # 110 переменных x_i
+    num_vars = 10 * N
 
     c = np.zeros(num_vars)
     A_ub = []
     b_ub = []
 
-    # Ограничение: x_i + 2x_{i+1} - x_{i+2} <= 100
     for k in range(num_vars - 2):
         row = np.zeros(num_vars)
         row[k] = 1
@@ -39,4 +38,5 @@ def solve_task_2():
 
 
 if __name__ == "__main__":
+
     solve_task_2()
