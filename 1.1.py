@@ -3,16 +3,14 @@ from scipy.optimize import linprog
 
 
 def solve_task_1():
-    N = 11  # <-- заменил на 11
-    num_vars = 10 * N  # 110 переменных
+    N = 11  
+    num_vars = 10 * N  
 
-    # Коэффициенты целевой функции с минусом, т.к. linprog минимизирует
     c = [- (2 * (k + 1) ** 2 - 4 * (k + 1) + 5) for k in range(num_vars)]
 
     A_ub = []
     b_ub = []
-
-    # Ограничение x_i + 3x_{i+1} - 2x_{i+2} <= 100
+    
     for k in range(num_vars - 2):
         row = np.zeros(num_vars)
         row[k] = 1
@@ -21,15 +19,13 @@ def solve_task_1():
         A_ub.append(row)
         b_ub.append(100)
 
-    # Ограничение x_i + 2x_2 >= 1  →  -x_i - 2x_2 <= -1
     for k in range(num_vars - 2):
         row = np.zeros(num_vars)
         row[k] = -1
-        row[1] = -2  # x_2 с индексом 1 (нумерация с 0)
+        row[1] = -2
         A_ub.append(row)
         b_ub.append(-1)
-
-    # Равенство sum x_i = 200
+        
     A_eq = [np.ones(num_vars)]
     b_eq = [200]
 
@@ -48,4 +44,5 @@ def solve_task_1():
 
 
 if __name__ == "__main__":
+
     solve_task_1()
