@@ -1,0 +1,51 @@
+import numpy as np
+from scipy.optimize import linprog
+
+
+def solve_task_1():
+    N = 11  # <-- заменил на 11
+    num_vars = 10 * N  # 110 переменных
+
+    # Коэффициенты целевой функции с минусом, т.к. linprog минимизирует
+    c = [- (2 * (k + 1) ** 2 - 4 * (k + 1) + 5) for k in range(num_vars)]
+
+    A_ub = []
+    b_ub = []
+
+    # Ограничение x_i + 3x_{i+1} - 2x_{i+2} <= 100
+    for k in range(num_vars - 2):
+        row = np.zeros(num_vars)
+        row[k] = 1
+        row[k + 1] = 3
+        row[k + 2] = -2
+        A_ub.append(row)
+        b_ub.append(100)
+
+    # Ограничение x_i + 2x_2 >= 1  →  -x_i - 2x_2 <= -1
+    for k in range(num_vars - 2):
+        row = np.zeros(num_vars)
+        row[k] = -1
+        row[1] = -2  # x_2 с индексом 1 (нумерация с 0)
+        A_ub.append(row)
+        b_ub.append(-1)
+
+    # Равенство sum x_i = 200
+    A_eq = [np.ones(num_vars)]
+    b_eq = [200]
+
+    bounds = [(0, None) for _ in range(num_vars)]
+
+    res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method='highs')
+
+    if res.success:
+        max_value = -res.fun
+        print(f"Максимальное значение функции: {max_value:.1f}")
+        print(f"x_2 (проверка): {res.x[1]:.4f}")
+        print(f"x_110 (последняя переменная): {res.x[-1]:.4f}")
+        print(f"Сумма x_i (должна быть 200): {np.sum(res.x):.2f}")
+    else:
+        print("Не удалось найти решение:", res.message)
+
+
+if __name__ == "__main__":
+    solve_task_1()
